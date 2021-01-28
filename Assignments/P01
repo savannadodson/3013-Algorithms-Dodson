@@ -1,0 +1,360 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+// Author:           Savanna Dodson
+// Email:            savannadodson11@gmail.com
+// Label:            P01
+// Title:            Lecture 01 - Array Based Stack
+// Course:           3013
+// Semester:         Spring 2021
+//
+// Description:
+//       Overview of a class implementing an array based stack
+//
+//
+/////////////////////////////////////////////////////////////////////////////////
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+/**
+ * ArrayStack
+ * 
+ * Description:
+ *      Array based stack
+ * 
+ * Public Methods:
+ *      - See class below
+ * 
+ * Usage: 
+ *      - See main program
+ *      
+ */
+class ArrayStack
+{
+private:
+  int *A;           // pointer to array of int's
+  int top;          // top of stack 
+  
+public:
+double size;         // current max stack size
+int counter =0;
+ /**
+  * ArrayStack
+  * 
+  * Description:
+  *      Constructor no params
+  * 
+  * Params:
+  *     - None
+  * 
+  * Returns:
+  *     - NULL
+  */
+  ArrayStack()
+  {
+    size = 10;
+    A = new int[size];
+    top = -1;
+  }
+
+ /**
+  * ArrayStack
+  * 
+  * Description:
+  *      Constructor size param
+  * 
+  * Params:
+  *     - int size
+  * 
+  * Returns:
+  *     - NULL
+  */
+  ArrayStack(int s)
+  {
+    size = s;
+    A = new int[s];
+    top = -1;
+  }
+
+ /**
+  * Public bool: Empty
+  * 
+  * Description:
+  *      Stack empty?
+  * 
+  * Params:
+  *      NULL
+  * 
+  * Returns:
+  *      [bool] true = empty
+  */
+  bool Empty()
+  {
+    return (top <= -1);
+  }
+  
+ /**
+  * Public bool: Full
+  * 
+  * Description:
+  *      Stack full?
+  * 
+  * Params:
+  *      NULL
+  * 
+  * Returns:
+  *      [bool] true = full
+  */
+  bool Full()
+  {
+    return (top >= size-1);
+  }
+
+ /**
+  * Public int: Peek
+  * 
+  * Description:
+  *      Returns top value without altering the stack
+  * 
+  * Params:
+  *      NULL
+  * 
+  * Returns:
+  *      [int] top value if any
+  */
+  int Peek()
+  {
+    if(!Empty())
+    {
+      return A[top];
+    }
+    
+    return -99; // some sentinel value
+                // not a good solution
+  }
+  /**
+  * Public bool: Small
+  * 
+  * Description:
+  *      Stack too small?
+  * 
+  * Params:
+  *      NULL
+  * 
+  * Returns:
+  *      [bool] true = stack is too small
+  */
+  bool Small()
+  {
+    return (size > 10 && top <= size * 0.15);
+  }
+
+ /**
+  * Public int: Pop
+  * 
+  * Description:
+  *      Returns top value and removes it from stack
+  * 
+  * Params:
+  *      NULL
+  * 
+  * Returns:
+  *      [int] top value if any
+  */
+  void Pop()
+  {
+    if(!Empty())
+    {
+      top--;
+    }
+
+    CheckResize(); // some sentinel value
+                // not a good solution
+  }
+
+ /**
+  * Public void: Print
+  * 
+  * Description:
+  *      Prints stack to standard out
+  * 
+  * Params:
+  *      NULL
+  * 
+  * Returns:
+  *      NULL
+  */
+  void Print()
+  {
+    for(int i=0;i<=top;i++)
+    {
+      cout<<A[i]<<" ";
+    }
+    cout<<endl;
+  } 
+
+ /**
+  * Public bool: Push
+  * 
+  * Description:
+  *      Adds an item to top of stack
+  * 
+  * Params:
+  *      [int] : item to be added
+  * 
+  * Returns:
+  *      [bool] ; success = true
+  */
+  void Push(int x)
+  {
+    CheckResize();
+    A[++top] = x;
+    
+  }
+
+ /**
+  * Public void: ContainerGrow
+  * 
+  * Description:
+  *      Resizes the container for the stack by doubling
+  *      its capacity
+  * 
+  * Params:
+  *      NULL
+  * 
+  * Returns:
+  *      NULL
+  */
+  void ContainerGrow()
+  {
+    int newSize = size*2;       // double size of original
+    int *B = new int[newSize];  // allocate new memory
+
+    for(int i=0;i<size;i++){    // copy values to new array
+      B[i] = A[i];
+    }
+
+    delete [] A;                // delete old array
+
+    size = newSize;             // save new size
+
+    A = B;                      // reset array pointer
+
+  }
+
+  /**
+  * Public void: ContainerShrink
+  * 
+  * Description:
+  *      Resizes the container for the stack by halfing
+  *      its capacity
+  * 
+  * Params:
+  *      NULL
+  * 
+  * Returns:
+  *      NULL
+  */
+  void ContainerShrink(){
+    int newSize = size/2;       // double size of original
+    int *C = new int[newSize];  // allocate new memory
+
+    for(int i=0;i < (size / 2);i++){    // copy values to new array
+      C[i] = A[i];
+    }
+
+    delete [] A;                // delete old array
+
+    size = newSize;             // save new size
+
+    A = C;                      // reset array pointer
+
+  }
+  /**
+  * Public void: CheckResize
+  * 
+  * Description:
+  *      Checks the size of the stack and decides whether to 
+  *      make the stack grow or shrink
+  * 
+  * Params:
+  *      NULL
+  * 
+  * Returns:
+  *      NULL
+  */
+
+  void CheckResize()
+  {
+    if(Full())
+    {
+      ContainerGrow();
+      counter++;
+    }
+    if(Small())
+    {
+      ContainerShrink();
+      counter++;
+    }
+  }
+
+};
+
+
+// MAIN DRIVER
+// Simple Array Based Stack Usage:
+int main() 
+{
+  //declaring the output file
+  ofstream outfile;
+  outfile.open("Program 1 Output" );
+  ifstream fin;
+  fin.open("nums_test.dat");
+
+  //declaring the variables
+  int r = 0;
+  ArrayStack stack;
+  int num;
+  int max = stack.size;
+  int FinalSize;
+  //printing banner for the output
+  outfile << "##############################################" << '\n';
+  outfile << "   Assignment 4 - Resizing the stack" << '\n';
+  outfile << "   CMPS 3013" << '\n';
+  outfile << "   Savanna Dodson" << '\n' << '\n' << '\n';
+
+  
+  
+  //reading through the output file
+  while(!fin.eof())
+  { 
+    //reading in the number for the stack
+    fin >> num;
+    if(num % 2 == 0)
+    {
+      //adding numbers into the stack
+      stack.Push(num);
+      if(max < stack.size)
+      {
+        max = stack.size;
+      }
+    }
+    else
+    {
+      stack.Pop();
+    }
+    FinalSize = stack.size;
+  }
+  //keeping track of the amount of times the stack resizes
+  int count = stack.counter;
+
+  outfile << "    Max Stack Size: " << max << '\n';
+  outfile << "    End Stack Size: " << FinalSize << '\n';
+  outfile << "    Stack Resized:  " << count << " times!" << '\n' << '\n';
+  outfile << "##############################################" << '\n';
+  
+  return 0;
+
+}
+
